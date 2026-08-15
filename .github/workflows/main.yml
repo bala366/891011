@@ -1,0 +1,107 @@
+name: COMPILAR APK LOTOFACIL PERIMETRO 11
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Configurar Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Conferir estrutura do projeto
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "LOTOFACIL - PERIMETRO 11"
+          echo "8 / 9 / 10 REPETIDAS"
+          echo "=========================================="
+
+          test -f settings.gradle.kts
+          test -f build.gradle.kts
+          test -f app/build.gradle.kts
+          test -f app/src/main/AndroidManifest.xml
+
+          test -f app/src/main/java/br/com/lotofacil/perimetro11/Engine.java
+          test -f app/src/main/java/br/com/lotofacil/perimetro11/MainActivity.java
+          test -f app/src/main/java/br/com/lotofacil/perimetro11/AnalysisService.java
+
+          echo "ESTRUTURA OK"
+
+      - name: Mostrar versões
+        shell: bash
+        run: |
+          java -version
+          gradle --version
+
+      - name: Limpar compilação anterior
+        shell: bash
+        run: |
+          gradle --stop || true
+          rm -rf app/build
+          rm -rf .gradle
+
+      - name: Compilar APK
+        shell: bash
+        run: |
+          gradle --no-daemon :app:assembleDebug --stacktrace
+
+      - name: Procurar APK
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "PROCURANDO APK"
+          echo "=========================================="
+
+          find app/build/outputs \
+            -type f \
+            -name "*.apk" \
+            -print
+
+      - name: Preparar APK final
+        shell: bash
+        run: |
+          mkdir -p apk-final
+
+          APK=$(find app/build/outputs/apk/debug \
+            -type f \
+            -name "*.apk" | head -1)
+
+          if [ -z "$APK" ]; then
+            echo "ERRO: APK NAO ENCONTRADO"
+            exit 1
+          fi
+
+          cp "$APK" \
+            apk-final/LOTOFACIL-PERIMETRO-11-V1.0.apk
+
+          echo "=========================================="
+          echo "APK FINAL PRONTO"
+          echo "=========================================="
+
+          ls -lh apk-final/
+
+      - name: Salvar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LOTOFACIL-PERIMETRO-11-V1.0
+          path: apk-final/LOTOFACIL-PERIMETRO-11-V1.0.apk
+          if-no-files-found: error
+          retention-days: 30
