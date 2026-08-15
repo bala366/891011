@@ -1,0 +1,4 @@
+JAVAC ENGINE: OK
+BLACKTEST_OK
+Manifest XML: OK
+Workflow: OK

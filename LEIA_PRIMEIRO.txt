@@ -1,0 +1,8 @@
+LOTOFÁCIL — PERÍMETRO 11 — V1.0
+
+Escolha 8, 9 ou 10 repetidas do último resultado.
+O último resultado é só referência e NÃO entra no perímetro.
+Perímetro: penúltimo até o 5º anterior.
+Regra: pelo menos um 11 exato e nenhum valor acima de 11 nos cinco.
+Depois rankeia pelos 10 anteriores; 15 elimina.
+Foreground Service + checkpoint + retomada; reset só no botão.
